@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'groovy'
+    id 'jacoco'
+    id "dev.projektor.publish" version "7.2.0"
+}
+
+repositories {
+    jcenter()
+}
+
+group = "com.atkinsondev.gradle.examples"
+
+dependencies {
+    implementation('org.codehaus.groovy:groovy-all:2.5.13')
+
+    testImplementation('org.spockframework:spock-core:1.3-groovy-2.5')
+}
+
+sourceSets {
+    intTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    intTestImplementation.extendsFrom testImplementation
+    intTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+}
+
+// Combine the coverage data from the "test" and "integrationTest" tasks into a single coverage report
+// under the "jacocoTestReport" task
+jacocoTestReport {
+    dependsOn test, integrationTest
+    executionData { tasks.withType(Test).findAll { it.jacoco.destinationFile.exists() }*.jacoco.destinationFile }
+}
+
+test {
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}
+
+projektor {
+    serverUrl = "https://projektorlive.herokuapp.com"
+    publishToken = System.getenv("PROJEKTOR_TOKEN") ?: project.findProperty('projektor_publish_token') ?: null
+    alwaysPublish = true
+}
+
+check.dependsOn(integrationTest)
