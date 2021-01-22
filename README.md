@@ -13,3 +13,5 @@ jacocoTestReport {
     executionData { tasks.withType(Test).findAll { it.jacoco.destinationFile.exists() }*.jacoco.destinationFile }
 }
 ```
+
+Credit to the very helpful folks who answered this StackOverflow question: https://stackoverflow.com/a/57330075
