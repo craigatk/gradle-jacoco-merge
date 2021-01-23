@@ -6,10 +6,9 @@ from multiple test tasks into a single Jacoco report.
 For example, if the project has `test` and `integrationTest` tasks defined:
 
 ```
-// Combine the coverage data from the "test" and "integrationTest" tasks into a single coverage report
-// under the "jacocoTestReport" task
+// Combine the coverage data from the all test tasks into a single coverage report under the "jacocoTestReport" task
 jacocoTestReport {
-    dependsOn test, integrationTest
+    dependsOn tasks.withType(Test)
     executionData { tasks.withType(Test).findAll { it.jacoco.destinationFile.exists() }*.jacoco.destinationFile }
 }
 ```
