@@ -9,7 +9,7 @@ For example, if the project has `test` and `integrationTest` tasks defined:
 // Combine the coverage data from the all test tasks into a single coverage report under the "jacocoTestReport" task
 jacocoTestReport {
     dependsOn tasks.withType(Test)
-    executionData { tasks.withType(Test).findAll { it.jacoco.destinationFile.exists() }*.jacoco.destinationFile }
+        executionData { tasks.withType(Test)*.jacoco.destinationFile }
 }
 ```
 
