@@ -23,7 +23,9 @@ jobs:
     - name: Build with Gradle
       env:
         PROJEKTOR_TOKEN: ${{ secrets.PROJEKTOR_TOKEN }}
-      run: ./gradlew check jTR
+      run: |
+        chmod +x ./gradlew
+        ./gradlew check jTR
 
     - name: Projektor report URL
       uses: craigatk/projektor-action@v10
